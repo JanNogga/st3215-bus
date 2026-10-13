@@ -1,0 +1,55 @@
+[build-system]
+requires = ["maturin>=1.7,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "st3215-bus"
+dynamic = ["version"]
+description = "Python bindings for Feetech ST3215 servo buses, built in Rust on NormaCore's st3215 protocol."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE", "third_party/norma-core/LICENSE"]
+requires-python = ">=3.8"
+authors = [{ name = "Jan Nogga", email = "jan@nogga.eu" }]
+keywords = ["servo", "st3215", "feetech", "robotics", "serial"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Rust",
+    "Topic :: Scientific/Engineering :: Robotics",
+    "Topic :: System :: Hardware",
+    "Typing :: Typed",
+]
+
+[project.urls]
+Repository = "https://github.com/JanNogga/st3215-bus"
+Issues = "https://github.com/JanNogga/st3215-bus/issues"
+
+[project.scripts]
+st3215-export-calibration = "st3215_bus.export_calibration:main"
+
+[tool.maturin]
+# Mixed Rust/Python layout: python/st3215_bus/ is the package (re-exporting the
+# extension, plus the pure-Python calibration exporter and the type stubs), and
+# the compiled extension is its submodule st3215_bus.st3215_bus, the same place
+# it had in the pure-Rust layout.
+python-source = "python"
+module-name = "st3215_bus.st3215_bus"
+features = ["pyo3/extension-module"]
+# Cargo leaves the protocol sources out of the package list because their
+# directory belongs to another crate (NormaCore's st3215, which has its own
+# Cargo.toml), so Cargo.toml's `include` alone does not get them into the sdist.
+include = [
+    { path = "third_party/norma-core/software/drivers/st3215/src/protocol/**/*", format = "sdist" },
+]

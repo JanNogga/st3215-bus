@@ -1,0 +1,46 @@
+[package]
+name = "st3215_bus"
+version = "0.1.0"
+edition = "2021"
+authors = ["Jan Nogga <jan@nogga.eu>"]
+description = "Python bindings for Feetech ST3215 servo buses, built in Rust on NormaCore's st3215 protocol."
+license = "MIT"
+repository = "https://github.com/JanNogga/st3215-bus"
+readme = "README.md"
+keywords = ["servo", "st3215", "feetech", "robotics", "python"]
+categories = ["hardware-support"]
+# What goes into the sdist (maturin adds pyproject.toml and python/ itself).
+# From the NormaCore submodule only the protocol sources and NormaCore's
+# license are needed.
+include = [
+    "/src",
+    "/build.rs",
+    "/Cargo.toml",
+    "/Cargo.lock",
+    "/LICENSE",
+    "/README.md",
+    "/pyproject.toml",
+    "/python",
+    "/third_party/norma-core/software/drivers/st3215/src/protocol/**",
+    "/third_party/norma-core/LICENSE",
+]
+
+[lib]
+name = "st3215_bus"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.23", features = ["extension-module", "abi3-py38"] }
+# rt-multi-thread + sync + time: the runtime, per-bus locks and retry sleeps in
+# lib.rs. io-util + time: the protocol's framed reads/writes and
+# timeouts. net: the I/O driver that serial ports register with.
+tokio = { version = "1.49", features = ["rt-multi-thread", "sync", "time", "io-util", "net"] }
+# No default features: those only add libudev-based port enumeration, which is
+# never used here (ports are opened by path), so wheels need no libudev.
+tokio-serial = { version = "5.4.5", default-features = false }
+bytes = "1.11"
+futures = "0.3"
+
+[dev-dependencies]
+# #[tokio::test] in NormaCore's protocol tests.
+tokio = { version = "1.49", features = ["macros", "rt"] }

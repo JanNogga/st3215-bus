@@ -1,0 +1,26 @@
+# Rust
+/target/
+**/*.rs.bk
+
+# maturin / Python build output
+/dist/
+/build/
+*.whl
+*.so
+*.pyd
+*.egg-info/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
+# Editors / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store

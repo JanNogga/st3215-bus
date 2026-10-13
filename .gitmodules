@@ -1,0 +1,4 @@
+[submodule "third_party/norma-core"]
+	path = third_party/norma-core
+	url = https://github.com/norma-core/norma-core
+	shallow = true
