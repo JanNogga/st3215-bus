@@ -27,8 +27,8 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Rust",
-    "Topic :: Scientific/Engineering :: Robotics",
-    "Topic :: System :: Hardware",
+    "Topic :: Scientific/Engineering",
+    "Topic :: System :: Hardware :: Hardware Drivers",
     "Typing :: Typed",
 ]
 
