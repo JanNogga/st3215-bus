@@ -25,7 +25,7 @@ ranges out of a running NormaCore station into JSON.
 - `docker/build.sh`: builds and checks wheels/sdist into `dist/`; `--help` documents everything.
 - `docker/check_wheel.py`: verifies a wheel's platform tags, ELF arch and glibc symbol versions.
 - `docker/smoke_test.py`: imports an installed wheel, runs the CLI and the unit tests.
-- `.github/workflows/ci.yml`: cargo test + clippy, unit tests (3.8, 3.13), x86_64/aarch64 wheels, sdist, PyPI publish.
+- `.github/workflows/ci.yml`: cargo test + clippy, unit tests (3.8, 3.13), x86_64/aarch64 wheels (x86_64 smoke-tested in-job, aarch64 natively on an arm64 runner), sdist, PyPI publish.
 - `third_party/norma-core/`: NormaCore submodule. Only
   `software/drivers/st3215/src/protocol/` is compiled (plus its `LICENSE`, which ships).
 

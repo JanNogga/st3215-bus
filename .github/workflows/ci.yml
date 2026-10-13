@@ -81,6 +81,34 @@ jobs:
           name: wheels-linux-${{ matrix.target }}
           path: dist
 
+  smoke-aarch64:
+    name: smoke test (aarch64, native)
+    needs: linux
+    runs-on: ubuntu-24.04-arm   # native arm64: the cross-built wheel is imported on real aarch64
+    steps:
+      - uses: actions/checkout@v7   # no submodule: the smoke test needs only docker/ and tests/
+      - uses: actions/download-artifact@v8
+        with:
+          name: wheels-linux-aarch64
+          path: dist
+      - uses: actions/setup-python@v7
+        with:
+          python-version: |
+            3.8
+            3.9
+            3.10
+            3.11
+            3.12
+            3.13
+      - name: Smoke test + unit tests (one abi3 wheel, several interpreters)
+        shell: bash
+        run: |
+          for v in 3.8 3.9 3.10 3.11 3.12 3.13; do
+            "python$v" -m venv "/tmp/venv$v"
+            "/tmp/venv$v/bin/pip" install dist/*.whl
+            "/tmp/venv$v/bin/python" -I docker/smoke_test.py "$PWD/tests"
+          done
+
   sdist:
     name: sdist
     runs-on: ubuntu-latest
@@ -101,7 +129,7 @@ jobs:
   publish:
     name: publish to PyPI
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: [test, linux, sdist]
+    needs: [test, linux, smoke-aarch64, sdist]
     runs-on: ubuntu-latest
     environment:
       name: pypi
