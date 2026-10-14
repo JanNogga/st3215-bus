@@ -1,6 +1,6 @@
 [package]
 name = "st3215_bus"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["Jan Nogga <jan@nogga.eu>"]
 description = "Python bindings for Feetech ST3215 servo buses, built in Rust on NormaCore's st3215 protocol."

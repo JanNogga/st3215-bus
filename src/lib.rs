@@ -223,7 +223,7 @@ impl Buses {
     /// Which motor ids answer, per bus. Retries, because a bus whose PSU has
     /// just come up commonly misses the first ping.
     #[pyo3(signature = (highest_id = 8))]
-    fn ping(&self, py: Python<'_>, highest_id: u8) -> HashMap<String, Vec<u8>> {
+    fn ping(&self, py: Python<'_>, highest_id: u8) -> HashMap<String, Vec<u16>> {
         let timeout = self.timeout_ms;
         let buses = self.buses.clone();
         py.allow_threads(|| {
@@ -242,7 +242,8 @@ impl Buses {
                             }
                         }
                     }
-                    (bus.name.clone(), found)
+                    // Vec<u8> would reach Python as `bytes`; u16 makes it a list.
+                    (bus.name.clone(), found.into_iter().map(u16::from).collect())
                 });
                 futures::future::join_all(tasks).await.into_iter().collect()
             })
@@ -344,7 +345,7 @@ impl Buses {
         py: Python<'_>,
         register: &str,
         values: HashMap<String, HashMap<u8, u16>>,
-    ) -> PyResult<HashMap<String, Vec<u8>>> {
+    ) -> PyResult<HashMap<String, Vec<u16>>> {
         let reg = eeprom_by_name(register)
             .ok_or_else(|| PyRuntimeError::new_err(format!("unknown EEPROM register: {register}")))?;
         let timeout = self.timeout_ms;
@@ -370,7 +371,8 @@ impl Buses {
                             }
                         }
                         failed.sort_unstable();
-                        (bus.name.clone(), failed)
+                        // Vec<u8> would reach Python as `bytes`; u16 makes it a list.
+                        (bus.name.clone(), failed.into_iter().map(u16::from).collect())
                     }
                 });
                 futures::future::join_all(tasks).await.into_iter().collect()
